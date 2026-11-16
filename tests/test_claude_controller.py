@@ -13,7 +13,11 @@ def tool_response(action):
         name="agent_action",
         input=action,
     )
-    return SimpleNamespace(content=[block], stop_reason="tool_use")
+    return SimpleNamespace(
+        content=[block],
+        stop_reason="tool_use",
+        usage=SimpleNamespace(input_tokens=10, output_tokens=5),
+    )
 
 
 class ClaudeControllerTests(unittest.TestCase):
@@ -47,6 +51,10 @@ class ClaudeControllerTests(unittest.TestCase):
         self.assertEqual(request["model"], "claude-haiku-5-5")
         self.assertIn("[chunk-1] ...", request["messages"][0]["content"])
         self.assertEqual(request["tool_choice"], {"type": "any"})
+        self.assertEqual(
+            controller.usage_records,
+            [{"input_tokens": 10, "output_tokens": 5}],
+        )
 
     @patch("starter.claude_controller.Anthropic")
     @patch("starter.claude_controller.load_dotenv")
@@ -86,7 +94,9 @@ class ClaudeControllerTests(unittest.TestCase):
     def test_response_without_tool_call_is_an_error(self, load_dotenv, anthropic):
         client = Mock()
         client.messages.create.return_value = SimpleNamespace(
-            content=[], stop_reason="end_turn"
+            content=[],
+            stop_reason="end_turn",
+            usage=SimpleNamespace(input_tokens=10, output_tokens=5),
         )
         anthropic.return_value = client
         controller = ClaudeController(api_key="test-key")

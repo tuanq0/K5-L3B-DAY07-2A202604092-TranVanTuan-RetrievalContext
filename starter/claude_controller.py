@@ -93,6 +93,7 @@ class ClaudeController:
         self.model = selected_model
         self.max_tokens = selected_max_tokens
         self.client = Anthropic(api_key=selected_key.strip())
+        self.usage_records: list[dict[str, int]] = []
 
     @staticmethod
     def _message(question: str, history: list[dict[str, Any]]) -> str:
@@ -129,6 +130,12 @@ class ClaudeController:
                     "content": self._message(question, history),
                 }
             ],
+        )
+        self.usage_records.append(
+            {
+                "input_tokens": response.usage.input_tokens,
+                "output_tokens": response.usage.output_tokens,
+            }
         )
 
         tool_use: ToolUseBlock | None = None

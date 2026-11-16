@@ -1,107 +1,83 @@
-# Day 7: thí nghiệm retrieval trên dev
+# Day 7: đánh giá Claude agent trên test
 
-## Cách setup và chạy 
+## Cách setup và chạy từ lúc git clone
 
-Quay về thư mục gốc Day 7, tạo cấu hình local rồi sửa model path:
+Ví dụ dùng Windows PowerShell. Cần Git, Python 3.11+, quyền truy cập PostgreSQL đã có index cần cho Day 7, thư mục embedding model local 768 chiều và Anthropic API key.
 
 ```powershell
-cd ..\..\K5-L3B-DAY07-2A202604092-TranVanTuan-RetrievalContext
+cd $HOME
+git clone https://github.com/tuanq0/K5-L3B-DAY07-2A202604092-TranVanTuan-RetrievalContext.git
+cd $HOME\K5-L3B-DAY07-2A202604092-TranVanTuan-RetrievalContext
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r starter\requirements.txt
 Copy-Item starter\.env.example starter\.env
 ```
 
-Trong `starter\.env`, bảo đảm:
+Trong `starter\.env`, đặt cấu hình kết nối/model và chỉ thêm API key nếu chạy Claude:
 
 ```dotenv
 DATABASE_URL=postgresql://day6:day6_local_only@127.0.0.1:55433/day6_lab
 EMBEDDING_MODEL=C:\models\embeddinggemma-2
 VECTOR_STRATEGY=A
+ANTHROPIC_API_KEY=
 ```
 
-`EMBEDDING_MODEL` phải trỏ tới đúng thư mục model đã cấu hình cho Day 6. `ANTHROPIC_API_KEY` chỉ cần điền key hợp lệ nếu chạy agent Claude; benchmark retrieval không gọi Claude. Không commit file `.env`.
+`DATABASE_URL` phải trỏ tới PostgreSQL có bảng `rag_chunks_768` và Strategy A; `EMBEDDING_MODEL` phải khớp model dùng cho index. Điền API key vào `ANTHROPIC_API_KEY`; không commit `.env` hoặc API key. Câu hỏi benchmark nằm trong `starter\data\converted\questions.json`.
 
-Benchmark questions ở `starter\data\converted\questions.json` gồm dev/test và các câu thiếu evidence. File này được cho phép theo dõi Git riêng; giữ file khi commit để người khác có thể chạy benchmark sau khi clone. Chunk JSON không cần đưa vào repo: retriever đọc trực tiếp từ PostgreSQL.
+### Kiểm tra kết nối và chạy Claude
 
-### 5. Kiểm tra và chạy
-
-Từ gốc Day 7:
+Từ gốc Day 7, kiểm tra kết nối tới index rồi chạy benchmark agent. Lệnh benchmark gọi Claude API và có thể phát sinh phí:
 
 ```powershell
 python -c "from starter.pgvector_retriever import PgVectorRetriever; print(len(PgVectorRetriever().search('Đất chợ dân sinh thuộc nhóm đất nào?')))"
-python -m starter.benchmark_retrievers --questions starter\data\converted\questions.json --split dev --output starter\results\retrieval-dev\dev-k5-b1600 --top-k 5 --budget 1600
-python -m starter.run_claude_agent "Đất chợ dân sinh thuộc nhóm đất nào?" --retrieval hybrid-rrf --max-searches 2 --top-k 5 --budget 1600
+python -m starter.benchmark_agent --questions starter\data\converted\questions.json --split test --output starter\results\agent-test\selected-hybrid-k5-b1600 --retrieval hybrid-rrf --max-searches 2 --top-k 5 --budget 1600
 ```
 
-Lệnh benchmark không cần Claude key. Lệnh chạy agent cần PostgreSQL, model embedding tương thích và key Anthropic hợp lệ; API call có thể tính phí. Sau khi chốt trên dev, chạy test vào output riêng:
+Nếu muốn đối chiếu với baseline Claude, chạy thêm lệnh baseline ở cuối báo cáo. Ghi mỗi cấu hình vào thư mục output riêng.
 
-```powershell
-python -m starter.benchmark_retrievers --questions starter\data\converted\questions.json --split test --output starter\results\retrieval-test\selected-k5-b1600 --top-k 5 --budget 1600
-```
+## Đánh giá Claude agent trên test
 
-## Thiết lập và tiêu chí chọn
+Chạy Claude Haiku 5.5 với Hybrid RRF, tối đa 2 lượt tìm kiếm/câu. So sánh baseline top-k=3, budget=800 với cấu hình ứng viên top-k=5, budget=1600. Chấm thủ công câu trả lời theo thang 0 (sai/không có căn cứ), 1 (đúng một phần) và 2 (đúng, đầy đủ, có căn cứ); citation được kiểm tra riêng với nội dung chunk.
 
-- Dữ liệu: 20 câu dev, gồm 18 câu có evidence và 2 câu thiếu evidence. Hai câu thiếu evidence không nằm trong mẫu số các metric retrieval.
-- Corpus/index: cùng PostgreSQL + pgvector Day 6, bảng `rag_chunks_768`, strategy `A`, embedding `embeddinggemma-2`; không đổi dữ liệu, filter hay query.
-- So sánh dense, TF-IDF lexical và hybrid RRF. RRF lấy candidate depth 20, `rrf_k=60`.
-- Context được đóng gói theo thứ tự ranking, giới hạn theo số ký tự. `Hit@3` giữ cutoff cố định; `Hit@k` dùng top-k của cấu hình.
-- Tiêu chí chốt trước test: ưu tiên Context Evidence Rate cao nhất, với Hit@3 không giảm so với baseline; cân nhắc mức tăng budget/context. Chỉ dev được dùng để chọn.
-- Thời gian là median của `retriever.search` trên máy này, không gồm Claude/API. Chi phí Claude chưa đo; các benchmark này chỉ đánh giá retrieval và context.
+| Chỉ số | Baseline k3/b800 | Ứng viên k5/b1600 |
+|---|---:|---:|
+| Câu có gọi retrieval | 8/8 | 8/8 |
+| Tổng lượt retrieval | 14 | 12 |
+| API calls Claude | 22 | 20 |
+| Input / output tokens | 23.466 / 2.652 | 23.974 / 2.811 |
+| Median thời gian/câu | 11.983 ms | 8.326 ms |
+| Điểm grounded 0 / 1 / 2 (trên 6 câu answerable) | 4 / 1 / 1 | 3 / 0 / 3 |
+| Điểm grounded trung bình (thang 0–2) | 0,50 | 1,00 |
+| Citation được nội dung hỗ trợ | 1/2 | 5/6 |
+| Câu trả lời có citation | 2/2 | 3/3 |
+| Abstain đúng trên câu thiếu evidence | 2/2 | 2/2 |
+| False abstention trên câu answerable | 4/6 | 3/6 |
 
-## Kết quả
+Kết quả theo câu:
 
-| Cấu hình | Phương pháp | Hit@1 | Evidence Hit@3 | Hit@k | Context Evidence Rate | Context TB (ký tự) | Median search (ms) |
-|---|---|---:|---:|---:|---:|---:|---:|
-| Baseline k3/b800 | Dense | 6/18 (33.3%) | 11/18 (61.1%) | 11/18 (61.1%) | 7/18 (38.9%) | 462 | 4011 |
-| Baseline k3/b800 | TF-IDF | 8/18 (44.4%) | 10/18 (55.6%) | 10/18 (55.6%) | 8/18 (44.4%) | 417 | 23 |
-| Baseline k3/b800 | Hybrid RRF | 7/18 (38.9%) | 12/18 (66.7%) | 12/18 (66.7%) | 7/18 (38.9%) | 422 | 4123 |
-| Thử 1 k5/b800 | Dense | 6/18 (33.3%) | 11/18 (61.1%) | 12/18 (66.7%) | 7/18 (38.9%) | 477 | 4418 |
-| Thử 1 k5/b800 | TF-IDF | 8/18 (44.4%) | 10/18 (55.6%) | 11/18 (61.1%) | 8/18 (44.4%) | 435 | 23 |
-| Thử 1 k5/b800 | Hybrid RRF | 7/18 (38.9%) | 12/18 (66.7%) | 14/18 (77.8%) | 7/18 (38.9%) | 443 | 4241 |
-| Thử 2 k5/b1200 | Dense | 6/18 (33.3%) | 11/18 (61.1%) | 12/18 (66.7%) | 11/18 (61.1%) | 762 | 3865 |
-| Thử 2 k5/b1200 | TF-IDF | 8/18 (44.4%) | 10/18 (55.6%) | 11/18 (61.1%) | 9/18 (50.0%) | 801 | 22 |
-| Thử 2 k5/b1200 | Hybrid RRF | 7/18 (38.9%) | 12/18 (66.7%) | 14/18 (77.8%) | 11/18 (61.1%) | 801 | 4013 |
-| Thử 3 k5/b1600 | Dense | 6/18 (33.3%) | 11/18 (61.1%) | 12/18 (66.7%) | 11/18 (61.1%) | 1073 | 5812 |
-| Thử 3 k5/b1600 | TF-IDF | 8/18 (44.4%) | 10/18 (55.6%) | 11/18 (61.1%) | 10/18 (55.6%) | 1104 | 25 |
-| Thử 3 k5/b1600 | Hybrid RRF | 7/18 (38.9%) | 12/18 (66.7%) | 14/18 (77.8%) | 12/18 (66.7%) | 1117 | 5239 |
+| ID | Baseline | Ứng viên | Nhận xét thủ công |
+|---|---|---|---|
+| T01 | Abstain | Abstain | Có thể trả lời nhưng cả hai lần search đều không có kết quả. |
+| T02 | Abstain | Abstain | Có thể trả lời nhưng cả hai lần search đều không có kết quả. |
+| T03 | Điểm 1 | Điểm 2 | Câu trả lời baseline gần đúng nhưng chunk được trích bị cắt trước điều kiện đầy đủ; cấu hình ứng viên trích đoạn hỗ trợ đầy đủ. |
+| T04 | Abstain | Điểm 2 | Cấu hình ứng viên nêu đúng giá trị thừa kế; hai citation hỗ trợ nội dung, citation `data:38:2` không hỗ trợ thêm khẳng định đi kèm. |
+| T05 | Abstain | Abstain | Có thể trả lời nhưng cả hai lần search đều không có kết quả. |
+| T06 | Điểm 2 | Điểm 2 | Câu trả lời có căn cứ; các citation đã chấm đều hỗ trợ nội dung. |
+| T07 | Abstain đúng | Abstain đúng | Câu thiếu evidence. |
+| T08 | Abstain đúng | Abstain đúng | Câu thiếu evidence. |
 
-Hai cấu hình cải thiện chính:
+**Giới hạn quan trọng:** T01, T02 và T05 truyền lần lượt filter `section=chuong_V`, `section=chuong_VI` và `section=chuong_IV`; trace của cả hai cấu hình ghi nhận các search này trả `results=[]`. Do đó ba false abstention này bị ảnh hưởng bởi filter/index và không thể quy riêng cho khả năng trả lời của Claude. Nguyên nhân metadata không khớp chưa được xác minh. Không sửa filter dựa trên test này hoặc dùng lại test để chọn cấu hình. Kết quả agent cho thấy tín hiệu cải thiện ở cấu hình ứng viên nhưng chưa đủ để kết luận chất lượng tổng quát.
 
-1. **k5/b800** tăng Hybrid Hit@k từ 12/18 lên 14/18, nhưng Context Evidence Rate vẫn 7/18. Tăng top-k giúp tìm evidence ở hạng thấp hơn, nhưng chưa đảm bảo evidence được đưa vào context.
-2. **k5/b1200** giữ Hybrid Hit@k 14/18 và tăng Context Evidence Rate lên 11/18, so với baseline 7/18.
-3. **k5/b1600** đạt Context Evidence Rate cao nhất, 12/18; Hit@3 và Hit@5 không giảm so với hai thử nghiệm trước. Context trung bình tăng từ 801 lên 1117 ký tự so với k5/b1200.
-
-## Hai lỗi dev đã đọc
-
-- **D07 — bảng giá đất đã công bố:** baseline Hybrid không có gold trong top-3. Với k5, evidence `data:20:2` xuất hiện ở hạng 4 nhưng vẫn không vào context, kể cả budget 1600. Bộ đóng gói ưu tiên ba chunk trước theo ranking; các chunk đó chiếm phần lớn budget. Đây là lỗi chọn context sau retrieval.
-- **D17 — thời hạn không sử dụng đất trồng cây lâu năm:** baseline Hybrid không có gold trong top-3. Với k5, chunk có evidence `data:77:0` lên hạng 4 nhưng bị loại khỏi context; context giữ `data:77:1` và các chunk xếp trước. Đây cũng là lỗi chọn context, không phải thiếu evidence trong corpus.
-
-Các lỗi này cho thấy tăng top-k cải thiện ranking nhưng chưa giải quyết được việc chọn đoạn cho context. Cấu hình đã chọn vẫn có 6/18 câu answerable không có evidence trong context; cần xem tiếp trace/đánh giá câu trả lời thật.
-
-## Cấu hình chốt trước khi chạy test
-
-Chọn **Hybrid RRF, top-k=5, context budget=1600 ký tự** vì đạt Context Evidence Rate cao nhất trong các cấu hình đã thử (12/18), đồng thời Hit@3 giữ 12/18 và Hit@5 đạt 14/18. Budget cao hơn k5/b1200 thêm 400 ký tự, đổi lại context hit tăng một câu (11/18 lên 12/18). Lựa chọn được ghi nhận trước khi chạy test.
-
-## Test sau khi chốt
-
-| Cấu hình / phương pháp | Hit@1 | Evidence Hit@3 | Hit@k | Context Evidence Rate |
-|---|---:|---:|---:|---:|
-| Baseline k3/b800, Hybrid RRF | 2/6 (33.3%) | 3/6 (50.0%) | 3/6 (50.0%) | 2/6 (33.3%) |
-| Đã chọn k5/b1600, Hybrid RRF | 2/6 (33.3%) | 3/6 (50.0%) | 3/6 (50.0%) | 3/6 (50.0%) |
-
-Test có 8 câu (6 answerable, 2 unanswerable); câu unanswerable không tính vào mẫu số retrieval. Trên test nhỏ này, cấu hình đã chọn giữ Hit@3 và tăng context hit một câu; không dùng test để chỉnh cấu hình thêm.
-
-Agent/Claude answer quality, citations, số token và API cost chưa được benchmark. Lần gọi Claude trước đó bị từ chối xác thực (401), nên kết quả ở đây chỉ là retrieval/context, không phải đánh giá câu trả lời của Claude.
+Hai lượt chạy agent trên test ghi nhận 42 API calls, 47.440 input tokens và 5.463 output tokens cộng lại. Đây là số liệu usage của hai benchmark run, không phải hóa đơn chi phí; chưa quy đổi sang USD và không bao gồm lần gọi thử riêng trước đó không được lưu trace.
 
 ## Lệnh tái tạo
 
 Chạy từ thư mục gốc:
 
 ```powershell
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split dev --output starter/results/retrieval-dev/baseline-k3-b800 --top-k 3 --budget 800
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split dev --output starter/results/retrieval-dev/config-k5-b800 --top-k 5 --budget 800
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split dev --output starter/results/retrieval-dev/config-k5-b1200 --top-k 5 --budget 1200
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split dev --output starter/results/retrieval-dev/config-k5-b1600 --top-k 5 --budget 1600
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split test --output starter/results/retrieval-test/baseline-k3-b800 --top-k 3 --budget 800
-python -m starter.benchmark_retrievers --questions starter/data/converted/questions.json --split test --output starter/results/retrieval-test/selected-hybrid-k5-b1600 --top-k 5 --budget 1600
+python -m starter.benchmark_agent --questions starter/data/converted/questions.json --split test --output starter/results/agent-test/baseline-k3-b800 --retrieval hybrid-rrf --max-searches 2 --top-k 3 --budget 800
+python -m starter.benchmark_agent --questions starter/data/converted/questions.json --split test --output starter/results/agent-test/selected-hybrid-k5-b1600 --retrieval hybrid-rrf --max-searches 2 --top-k 5 --budget 1600
 ```
 
-Mỗi thư mục output có `summary.json` và `traces.json`. Xem lần lượt [baseline](../../starter/results/retrieval-dev/baseline-k3-b800/summary.json), [k5/b800](../../starter/results/retrieval-dev/config-k5-b800/summary.json), [k5/b1200](../../starter/results/retrieval-dev/config-k5-b1200/summary.json) và [k5/b1600](../../starter/results/retrieval-dev/config-k5-b1600/summary.json). Thư mục `starter/results/` đang bị Git ignore; báo cáo này ghi lại số liệu để nộp và đối chiếu.
+Mỗi thư mục output có `summary.json` và `traces.json`. Hai lệnh trên đều gọi Claude API và có thể phát sinh phí. Thư mục `starter/results/` đang bị Git ignore; báo cáo ghi lại số liệu để đối chiếu.
