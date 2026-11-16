@@ -7,5 +7,8 @@ __pycache__/
 .codex-log/
 
 # Local datasets and generated output; share permitted artifacts deliberately
-starter/data/
+starter/data/*
+!starter/data/converted/
+starter/data/converted/*
+!starter/data/converted/questions.json
 starter/results/

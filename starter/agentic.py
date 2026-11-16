@@ -1,10 +1,13 @@
-"""Example agent loop; connect a real model and the Day 6 retriever via adapters.
+"""Example agent loop; ClaudeController and PgVectorRetriever are provided.
 
-Adapters are intentionally not provided: Day 6 has no fixed database schema and
-model providers differ. Never use fake adapters to report benchmark quality.
+Never use fake adapters to report benchmark quality.
 """
 from typing import Any, Protocol
-from baseline import pack_context
+
+if __package__:
+    from .baseline import pack_context
+else:
+    from baseline import pack_context
 
 
 class Controller(Protocol):

@@ -1,0 +1,367 @@
+[
+    {
+        "id":  "D01",
+        "split":  "dev",
+        "question":  "Theo mục đích sử dụng, đất đai được chia thành những nhóm nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  10,
+                         "evidence":  "nhóm đất nông nghiệp, nhóm đất phi nông nghiệp, nhóm đất chưa sử dụng"
+                     }
+                 ],
+        "expected_answer":  "Ba nhóm: nhóm đất nông nghiệp, nhóm đất phi nông nghiệp và nhóm đất chưa sử dụng."
+    },
+    {
+        "id":  "D02",
+        "split":  "dev",
+        "question":  "Đất chợ dân sinh được xếp vào loại đất nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  11,
+                         "evidence":  "đất chợ dân sinh, chợ đầu mối"
+                     }
+                 ],
+        "expected_answer":  "Thuộc nhóm đất phi nông nghiệp, cụ thể là đất sử dụng vào mục đích công cộng."
+    },
+    {
+        "id":  "D03",
+        "split":  "dev",
+        "question":  "Việc xác định loại đất dựa trên những căn cứ nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  11,
+                         "evidence":  "Việc xác định loại đất dựa trên một trong các căn cứ sau đây"
+                     }
+                 ],
+        "expected_answer":  "Một trong các căn cứ: Giấy chứng nhận; giấy tờ về quyền sử dụng đất theo Điều 137 (nếu chưa có giấy chứng nhận); quyết định giao đất, cho thuê đất, cho phép chuyển mục đích (nếu chưa có giấy chứng nhận)."
+    },
+    {
+        "id":  "D04",
+        "split":  "dev",
+        "question":  "Nếu loại đất ghi trên giấy tờ đã cấp khác với hiện trạng sử dụng đất thì xác định loại đất theo quy định của ai?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  11,
+                         "evidence":  "khác với hiện trạng sử dụng đất thì việc xác định loại đất thực hiện theo quy định của Chính phủ"
+                     }
+                 ],
+        "expected_answer":  "Thực hiện theo quy định của Chính phủ."
+    },
+    {
+        "id":  "D05",
+        "split":  "dev",
+        "question":  "Ai phải chịu trách nhiệm trước Nhà nước về việc sử dụng đất nông nghiệp vào mục đích công ích của xã?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  8,
+                         "evidence":  "nhân dân cấp xã đối với việc sử dụng đất nông nghiệp vào mục đích công ích"
+                     }
+                 ],
+        "expected_answer":  "Chủ tịch Ủy ban nhân dân cấp xã."
+    },
+    {
+        "id":  "D06",
+        "split":  "dev",
+        "question":  "Trường hợp hộ gia đình, cá nhân vi phạm pháp luật đất đai bị thu hồi đất thì cơ quan nào quyết định thu hồi?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  79,
+                         "evidence":  "Thu hồi đất đối với hộ gia đình, cá nhân, cộng đồng dân cư thuộc trường hợp quy định tại Điều 81 và Điều 82"
+                     }
+                 ],
+        "expected_answer":  "Ủy ban nhân dân cấp huyện (đối với hộ gia đình, cá nhân, cộng đồng dân cư thuộc Điều 81 và Điều 82).",
+        "filter":  {
+                       "section":  "chuong_VI"
+                   }
+    },
+    {
+        "id":  "D07",
+        "split":  "dev",
+        "question":  "Bảng giá đất đã công bố có thuộc thông tin đất đai mà công dân được tiếp cận không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  20,
+                         "evidence":  "Bảng giá đất đã được công bố"
+                     }
+                 ],
+        "expected_answer":  "Có, bảng giá đất đã được công bố là một trong các thông tin đất đai công dân được tiếp cận."
+    },
+    {
+        "id":  "D08",
+        "split":  "dev",
+        "question":  "Công dân có những nghĩa vụ nào đối với đất đai?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  21,
+                         "evidence":  "Giữ gìn, bảo vệ và phát triển tài nguyên đất"
+                     }
+                 ],
+        "expected_answer":  "Chấp hành đúng pháp luật về đất đai; giữ gìn, bảo vệ và phát triển tài nguyên đất; tôn trọng quyền sử dụng đất của người sử dụng đất khác."
+    },
+    {
+        "id":  "D09",
+        "split":  "dev",
+        "question":  "Hợp đồng cho thuê quyền sử dụng đất có bắt buộc phải công chứng hoặc chứng thực không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  22,
+                         "evidence":  "Hợp đồng cho thuê, cho thuê lại quyền sử dụng đất, quyền sử dụng đất và tài sản gắn liền với đất, hợp đồng chuyển đổi quyền sử dụng đất nông nghiệp; hợp đồng chuyển nhượng, góp vốn bằng quyền sử dụng đất, quyền sử dụng đất và tài sản gắn liền với đất, tài sản gắn liền với đất mà một bên hoặc các bên tham gia giao dịch là tổ chức hoạt động kinh doanh bất động sản được công chứng hoặc chứng thực theo yêu cầu của các bên"
+                     }
+                 ],
+        "expected_answer":  "Không bắt buộc; hợp đồng cho thuê, cho thuê lại quyền sử dụng đất được công chứng hoặc chứng thực theo yêu cầu của các bên (khác với chuyển nhượng, tặng cho, thế chấp, góp vốn phải công chứng/chứng thực)."
+    },
+    {
+        "id":  "D10",
+        "split":  "dev",
+        "question":  "Cá nhân chuyển đổi quyền sử dụng đất nông nghiệp thì phải thực hiện trong phạm vi nào và có phải nộp thuế, lệ phí không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  44,
+                         "evidence":  "chỉ được chuyển đổi quyền sử dụng đất nông nghiệp trong cùng đơn vị hành chính cấp tỉnh cho cá nhân khác"
+                     }
+                 ],
+        "expected_answer":  "Chỉ được chuyển đổi trong cùng đơn vị hành chính cấp tỉnh cho cá nhân khác; không phải nộp thuế thu nhập từ việc chuyển đổi và lệ phí trước bạ.",
+        "filter":  {
+                       "section":  "chuong_III"
+                   }
+    },
+    {
+        "id":  "D11",
+        "split":  "dev",
+        "question":  "Cá nhân là người dân tộc thiểu số được giao đất theo chính sách hỗ trợ có được chuyển nhượng quyền sử dụng đất không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  44,
+                         "evidence":  "không được chuyển nhượng, góp vốn, tặng cho, thừa kế, thế chấp quyền sử dụng đất, trừ trường hợp quy định tại khoản 1 và khoản 2 Điều này"
+                     }
+                 ],
+        "expected_answer":  "Không, trừ trường hợp được chuyển nhượng, tặng cho, thừa kế cho người thuộc hàng thừa kế là đối tượng quy định tại khoản 2 Điều 16, và được thế chấp tại ngân hàng chính sách.",
+        "filter":  {
+                       "section":  "chuong_III"
+                   }
+    },
+    {
+        "id":  "D12",
+        "split":  "dev",
+        "question":  "Tổ chức kinh tế có vốn đầu tư nước ngoài được nhận chuyển nhượng quyền sử dụng đất ở khu vực nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  23,
+                         "evidence":  "được nhận chuyển nhượng quyền sử dụng đất trong khu công nghiệp, cụm công nghiệp, khu công nghệ cao"
+                     }
+                 ],
+        "expected_answer":  "Trong khu công nghiệp, cụm công nghiệp, khu công nghệ cao."
+    },
+    {
+        "id":  "D13",
+        "split":  "dev",
+        "question":  "Đơn vị sự nghiệp công lập được giao đất không thu tiền sử dụng đất mà muốn dùng đất để kinh doanh, dịch vụ thì được chọn hình thức nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  25,
+                         "evidence":  "được lựa chọn chuyển sang hình thức Nhà nước cho thuê đất thu tiền thuê đất hằng năm"
+                     }
+                 ],
+        "expected_answer":  "Được chuyển sang hình thức Nhà nước cho thuê đất thu tiền thuê đất hằng năm đối với phần diện tích đó."
+    },
+    {
+        "id":  "D14",
+        "split":  "dev",
+        "question":  "Thời gian lấy ý kiến về quy hoạch sử dụng đất cấp tỉnh là bao lâu?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  62,
+                         "evidence":  "Thời gian lấy ý kiến về quy hoạch sử dụng đất cấp tỉnh là 45 ngày"
+                     }
+                 ],
+        "expected_answer":  "45 ngày kể từ ngày công khai thông tin về nội dung lấy ý kiến.",
+        "filter":  {
+                       "section":  "chuong_V"
+                   }
+    },
+    {
+        "id":  "D15",
+        "split":  "dev",
+        "question":  "Quy hoạch sử dụng đất cấp huyện được lập cho khoảng thời gian bao nhiêu năm và tầm nhìn bao xa?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  55,
+                         "evidence":  "Thời kỳ quy hoạch sử dụng đất cấp huyện là 10 năm. Tầm nhìn quy hoạch sử dụng đất cấp huyện là 20 năm"
+                     }
+                 ],
+        "expected_answer":  "Thời kỳ 10 năm, tầm nhìn 20 năm."
+    },
+    {
+        "id":  "D16",
+        "split":  "dev",
+        "question":  "Kiểm kê đất đai được thực hiện định kỳ như thế nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  51,
+                         "evidence":  "Kiểm kê đất đai được thực hiện 05 năm một lần, tính đến hết ngày 31 tháng 12 của năm có chữ số cuối là 4 hoặc 9"
+                     }
+                 ],
+        "expected_answer":  "05 năm một lần, tính đến hết ngày 31 tháng 12 của năm có chữ số cuối là 4 hoặc 9."
+    },
+    {
+        "id":  "D17",
+        "split":  "dev",
+        "question":  "Đất trồng cây lâu năm không sử dụng liên tục bao lâu (và đã bị xử phạt) thì bị thu hồi?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  77,
+                         "evidence":  "đất trồng cây lâu năm không được sử dụng trong thời gian 18 tháng liên tục"
+                     }
+                 ],
+        "expected_answer":  "18 tháng liên tục, và đã bị xử phạt vi phạm hành chính mà không đưa đất vào sử dụng theo thời hạn ghi trong quyết định xử phạt."
+    },
+    {
+        "id":  "D18",
+        "split":  "dev",
+        "question":  "Người sử dụng đất không thực hiện nghĩa vụ tài chính vì bất khả kháng thì có bị thu hồi đất theo Điều 81 không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  77,
+                         "evidence":  "không áp dụng đối với trường hợp bất khả kháng"
+                     }
+                 ],
+        "expected_answer":  "Không; các trường hợp tại khoản 6, 7 và 8 Điều 81 không áp dụng đối với trường hợp bất khả kháng."
+    },
+    {
+        "id":  "T01",
+        "split":  "test",
+        "question":  "Quy hoạch, kế hoạch sử dụng đất sau khi được phê duyệt phải được công bố công khai chậm nhất bao nhiêu ngày?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  68,
+                         "evidence":  "Chậm nhất là 15 ngày kể từ ngày được cơ quan nhà nước có thẩm quyền quyết định, phê duyệt"
+                     }
+                 ],
+        "expected_answer":  "Chậm nhất 15 ngày kể từ ngày được cơ quan nhà nước có thẩm quyền quyết định, phê duyệt.",
+        "filter":  {
+                       "section":  "chuong_V"
+                   }
+    },
+    {
+        "id":  "T02",
+        "split":  "test",
+        "question":  "Thời hạn trưng dụng đất tối đa là bao lâu và được gia hạn thế nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  92,
+                         "evidence":  "đất là không quá 30 ngày kể từ khi quyết định trưng dụng đất có hiệu lực thi hành."
+                     }
+                 ],
+        "expected_answer":  "Không quá 30 ngày kể từ khi quyết định có hiệu lực; nếu hết hạn mà mục đích chưa hoàn thành thì được gia hạn nhưng không quá 30 ngày.",
+        "filter":  {
+                       "section":  "chuong_VI"
+                   }
+    },
+    {
+        "id":  "T03",
+        "split":  "test",
+        "question":  "Ai chịu trách nhiệm quản lý đất chưa sử dụng tại các đảo chưa giao cho cấp huyện, cấp xã quản lý?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  9,
+                         "evidence":  "đối với việc quản lý đất chưa sử dụng tại các đảo chưa giao cho đơn vị hành chính cấp huyện, cấp xã quản lý."
+                     }
+                 ],
+        "expected_answer":  "Chủ tịch Ủy ban nhân dân cấp tỉnh."
+    },
+    {
+        "id":  "T04",
+        "split":  "test",
+        "question":  "Nếu người thừa kế quyền sử dụng đất là người gốc Việt Nam định cư ở nước ngoài nhưng không thuộc đối tượng được nhận quyền sử dụng đất theo khoản 1 Điều 44 thì được hưởng gì?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  32,
+                         "evidence":  "nếu không thuộc đối tượng quy định tại khoản 1 Điều 44 của Luật này thì được hưởng giá trị của phần thừa kế đó"
+                     }
+                 ],
+        "expected_answer":  "Không được nhận quyền sử dụng đất mà được hưởng giá trị của phần thừa kế đó."
+    },
+    {
+        "id":  "T05",
+        "split":  "test",
+        "question":  "Bản đồ địa chính được đo đạc, lập chi tiết đến từng thửa đất theo đơn vị hành chính cấp nào?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  46,
+                         "evidence":  "theo đơn vị hành chính cấp xã; nơi không thành lập đơn vị hành chính cấp xã thì được lập theo đơn vị hành chính cấp huyện"
+                     }
+                 ],
+        "expected_answer":  "Theo đơn vị hành chính cấp xã; nơi không thành lập đơn vị hành chính cấp xã thì lập theo đơn vị hành chính cấp huyện.",
+        "filter":  {
+                       "section":  "chuong_IV"
+                   }
+    },
+    {
+        "id":  "T06",
+        "split":  "test",
+        "question":  "Thực hiện giao dịch về quyền sử dụng đất mà không đăng ký với cơ quan có thẩm quyền có phải hành vi bị nghiêm cấm không?",
+        "gold":  [
+                     {
+                         "source_id":  "data",
+                         "page":  12,
+                         "evidence":  "thực hiện giao dịch về quyền sử dụng đất mà không đăng ký với cơ quan có thẩm quyền."
+                     }
+                 ],
+        "expected_answer":  "Có, đây là hành vi bị nghiêm cấm trong lĩnh vực đất đai."
+    },
+    {
+        "id": "D19",
+        "split": "dev",
+        "question": "Bảng giá đất áp dụng cụ thể cho thửa đất tại phường Y, tỉnh X trong năm 2025 là bao nhiêu đồng mỗi mét vuông?",
+        "answerable": false,
+        "expected_behavior": "search_and_abstain",
+        "absence_reason": "Bộ dữ liệu chỉ có Luật Đất đai 2024 cấp quốc gia, không có bảng giá đất địa phương áp dụng cho một thửa đất cụ thể."
+    },
+    {
+        "id": "D20",
+        "split": "dev",
+        "question": "Quyết định giao đất cho dự án khu dân cư A tại tỉnh X được ký vào ngày nào?",
+        "answerable": false,
+        "expected_behavior": "search_and_abstain",
+        "absence_reason": "Corpus không chứa hồ sơ hoặc quyết định của dự án cụ thể; luật chỉ quy định chung về giao đất."
+    },
+    {
+        "id": "T07",
+        "split": "test",
+        "question": "Thửa đất số 123 tại xã X được phê duyệt đơn giá bồi thường cụ thể là bao nhiêu đồng mỗi mét vuông?",
+        "answerable": false,
+        "expected_behavior": "search_and_abstain",
+        "absence_reason": "Corpus không có hồ sơ thửa đất hay phương án bồi thường cụ thể để xác định đơn giá."
+    },
+    {
+        "id": "T08",
+        "split": "test",
+        "question": "Hồ sơ xin cấp Giấy chứng nhận của hộ gia đình tại xã X được cơ quan có thẩm quyền tiếp nhận vào ngày nào?",
+        "answerable": false,
+        "expected_behavior": "search_and_abstain",
+        "absence_reason": "Ngày tiếp nhận là dữ liệu của một hồ sơ hành chính cụ thể, không có trong văn bản Luật Đất đai của corpus."
+    }
+]
